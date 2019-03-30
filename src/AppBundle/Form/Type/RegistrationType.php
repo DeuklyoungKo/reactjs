@@ -12,7 +12,9 @@ class RegistrationType extends RegistrationFormType
     {
         parent::buildForm($builder, $options);
 
-        $builder->add('firstName', TextType::class)
+        $builder->add('firstName', TextType::class, [
+            'data' => 'ron_furgandy'
+        ])
             ->add('lastName', TextType::class)
         ;
     }
