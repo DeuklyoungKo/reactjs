@@ -6,7 +6,22 @@
 
         initialize: function($wrapper) {
             this.$wrapper = $wrapper;
-            Helper.initialize($wrapper);
+
+            // Helper.initialize($wrapper);
+            this.helper = new Helper($wrapper);
+
+            var helper2 = new Helper($('footer'));
+
+            console.log(
+                this.helper.calculateTotalWeight(),
+                helper2.calculateTotalWeight()
+            );
+
+            // console.log(
+            //     'foo'.__proto__,
+            //     [].__proto__,
+            //     (new Date()).__proto__
+            // );
 
             this.$wrapper.find('.js-delete-rep-log').on(
                 'click',
@@ -18,9 +33,6 @@
                 this.handleRowClick.bind(this)
             );
 
-            // var newThis = {cat: 'neow', dog: 'woof'};
-            // var boundWhatIsThis = this.whatIsThis.bind(this);
-            // boundWhatIsThis.call(newThis,'hello');
         },
 
         // whatIsThis: function(greeting) {
@@ -29,7 +41,7 @@
 
         updateTotalWeightLifted: function() {
             this.$wrapper.find('.js-total-weight').html(
-                Helper.calculateTotalWeight()
+                this.helper.calculateTotalWeight()
             );
         },
 
@@ -83,11 +95,11 @@
     /**
      * A "private" object
      */
-    var Helper = {
-        initialize: function ($wrapper) {
-            this.$wrapper = $wrapper;
-        },
+    var Helper = function ($wrapper) {
+        this.$wrapper = $wrapper;
+    };
 
+    $.extend(Helper.prototype, {
         calculateTotalWeight: function () {
             var totalWeight = 0;
 
@@ -96,8 +108,17 @@
             });
 
             return  totalWeight;
-
         }
-    };
+    });
+
+    // Helper.prototype.calculateTotalWeight = function () {
+    //     var totalWeight = 0;
+    //
+    //     this.$wrapper.find('tbody tr').each(function() {
+    //         totalWeight += $(this).data('weight');
+    //     });
+    //
+    //     return  totalWeight;
+    // };
 
 })(window, jQuery);
