@@ -16,6 +16,12 @@
             this.handleRowClick.bind(this)
         );
 
+        this.$wrapper.find('.js-new-rep-log-form').on(
+            'submit',
+            this.handleNewFormSubmit.bind(this)
+        )
+
+
     };
 
     $.extend(window.RepLogApp.prototype, {
@@ -59,6 +65,29 @@
 
         handleRowClick: function() {
             console.log('row clicked');
+        },
+
+        handleNewFormSubmit: function (e) {
+            e.preventDefault();
+
+            var $form = $(e.currentTarget);
+            var $tbody = this.$wrapper.find('tbody');
+            // console.log($form.attr('action'));
+
+            var self = this;
+            $.ajax({
+                url: $form.attr('action'),
+                method: 'POST',
+                data: $form.serialize(),
+                success: function (data) {
+                    $tbody.append(data);
+                    self.updateTotalWeightLifted();
+                },
+                error: function (jqXHR) {
+                    $form.closest('.js-new-rep-log-form-wrapper')
+                        .html(jqXHR.responseText);
+                }
+            })
         }
 
     });
