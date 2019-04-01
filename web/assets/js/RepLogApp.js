@@ -77,21 +77,23 @@
             e.preventDefault();
 
             var $form = $(e.currentTarget);
-            var $tbody = this.$wrapper.find('tbody');
-            // console.log($form.attr('action'));
+            var formData = {};
+            $.each($form.serializeArray(), function (key, fieldData) {
+                formData[fieldData.name] = fieldData.value;
+            })
 
-            var self = this;
             $.ajax({
-                url: $form.attr('action'),
+                url: $form.data('url'),
                 method: 'POST',
-                data: $form.serialize(),
+                data: JSON.stringify(formData),
                 success: function (data) {
-                    $tbody.append(data);
-                    self.updateTotalWeightLifted();
+                    // todo
+                    console.log('success!');
                 },
                 error: function (jqXHR) {
-                    $form.closest('.js-new-rep-log-form-wrapper')
-                        .html(jqXHR.responseText);
+                    // todo
+                    console.log('error :(');
+
                 }
             })
         }
