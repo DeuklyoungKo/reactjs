@@ -23,7 +23,7 @@
         // this.$wrapper.find('.js-new-rep-log-form').on(
         this.$wrapper.on(
             'submit',
-            '.js-new-rep-log-form',
+            this._selectors.newRepForm,
             this.handleNewFormSubmit.bind(this)
         )
 
@@ -31,6 +31,10 @@
     };
 
     $.extend(window.RepLogApp.prototype, {
+
+        _selectors: {
+            newRepForm: '.js-new-rep-log-form'
+        },
 
         updateTotalWeightLifted: function() {
             this.$wrapper.find('.js-total-weight').html(
@@ -80,7 +84,9 @@
             var formData = {};
             $.each($form.serializeArray(), function (key, fieldData) {
                 formData[fieldData.name] = fieldData.value;
-            })
+            });
+
+            var self = this;
 
             $.ajax({
                 url: $form.data('url'),
@@ -91,11 +97,38 @@
                     console.log('success!');
                 },
                 error: function (jqXHR) {
-                    // todo
-                    console.log('error :(');
-
+                    var errorData = JSON.parse(jqXHR.responseText);
+                    self._mapErrorsToForm(errorData.errors);
                 }
             })
+        },
+
+        _mapErrorsToForm: function (errorData) {
+            // reset things
+            var $form = this.$wrapper.find(this._selectors.newRepForm);
+            $form.find('.js-field-error').remove();
+            $form.find('.form-group').removeClass('has-error');
+            // console.log(errorData);
+
+            $form.find(':input').each(function () {
+                var fieldName = $(this).attr('name');
+                var $wrapper = $(this).closest('.form-group');
+                if (!errorData[fieldName]) {
+                    // no error!
+                    return;
+                }
+
+                var $error = $('<span class="js-field-error help-block"></span>');
+
+
+                $error.html(errorData[fieldName]);
+
+                console.log($error);
+                console.log($error[0].outerText);
+
+                $wrapper.append($error);
+                $wrapper.addClass('has-error');
+            });
         }
 
     });
