@@ -61,6 +61,7 @@ class LiftController extends BaseController
             'repLogs' => $repLogs,
             'leaderboard' => $this->getLeaders(),
             'totalWeight' => $totalWeight,
+            'keyByTime' => time(),
         ));
     }
 
