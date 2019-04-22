@@ -39,7 +39,7 @@ class LiftController extends BaseController
 
             return $this->redirectToRoute('lift');
         }
-
+/*
         $repLogs = $this->getDoctrine()->getRepository('AppBundle:RepLog')
             ->findBy(array('user' => $this->getUser()))
         ;
@@ -47,6 +47,7 @@ class LiftController extends BaseController
         foreach ($repLogs as $repLog) {
             $totalWeight += $repLog->getTotalWeightLifted();
         }
+*/
 
 //        if ($request->isXmlHttpRequest()) {
 //            $html = $this->renderView('lift/_form.html.twig', [
@@ -58,9 +59,9 @@ class LiftController extends BaseController
 
         return $this->render('lift/index.html.twig', array(
             'form' => $form->createView(),
-            'repLogs' => $repLogs,
+//            'repLogs' => $repLogs,
             'leaderboard' => $this->getLeaders(),
-            'totalWeight' => $totalWeight,
+//            'totalWeight' => $totalWeight,
             'keyByTime' => time(),
         ));
     }

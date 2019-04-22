@@ -6,6 +6,8 @@
         this.$wrapper = $wrapper;
         this.helper = new Helper($wrapper);
 
+        this.loadRepLogs();
+
         // this.$wrapper.find('.js-delete-rep-log').on(
         this.$wrapper.on(
             'click',
@@ -35,6 +37,23 @@
         _selectors: {
             newRepForm: '.js-new-rep-log-form'
         },
+
+        _url: {
+            rep_log_list: '/reps'
+        },
+
+        loadRepLogs: function() {
+            var self = this;
+            $.ajax({
+                url: this._url.rep_log_list,
+                success: function(data) {
+                    $.each(data.items, function (key, repLog) {
+                        self._addRow(repLog);
+                    })
+                }
+            });
+        },
+
 
         updateTotalWeightLifted: function() {
             this.$wrapper.find('.js-total-weight').html(
@@ -145,7 +164,15 @@
         },
 
         _addRow: function (repLog) {
-            console.log(repLog);
+            // console.log(repLog);
+            var tplText = $('#js-rep-log-row-template').html();
+            var tpl = _.template(tplText);
+
+            var html = tpl(repLog);
+            this.$wrapper.find('tbody')
+                // .append($.parseHTML(html));
+                .append(html);
+            this.updateTotalWeightLifted();
         }
 
     });
