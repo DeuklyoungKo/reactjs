@@ -112,6 +112,8 @@
                 method: 'POST',
                 data: JSON.stringify(formData),
                 success: function (data) {
+                    console.log('success!!');
+                    console.log(data);
                     self._clearForm();
                     self._addRow(data);
                 },
@@ -119,7 +121,14 @@
                     var errorData = JSON.parse(jqXHR.responseText);
                     self._mapErrorsToForm(errorData.errors);
                 }
-            })
+            }).then(function (data) {
+                console.log("I am successful!");
+                console.log(data);
+                return data;
+            }).then(function (data) {
+                console.log('another handler');
+                console.log(data);
+            });
         },
 
         _mapErrorsToForm: function (errorData) {
@@ -138,8 +147,6 @@
                 }
 
                 var $error = $('<span class="js-field-error help-block"></span>');
-
-
                 $error.html(errorData[fieldName]);
 
                 console.log($error);
