@@ -122,10 +122,28 @@
         },
 
         _saveRepLog: function(data) {
-            return $.ajax({
-                url: this._url.rep_log_new,
-                method: 'POST',
-                data: JSON.stringify(data)
+
+
+            var self = this;
+
+            return new Promise(function (resolve,reject) {
+
+                $.ajax({
+                    url: self._url.rep_log_new,
+                    method: 'POST',
+                    data: JSON.stringify(data)
+                }).then(function (data, textStatus, jqXHR) {
+                    // console.log(jqXHR.getResponseHeader('Location'));
+                    $.ajax({
+                        url: jqXHR.getResponseHeader('Location'),
+                    }).then(function(data) {
+                        // console.log('no we are REALLY done');
+                        // console.log(data);
+                        resolve(data);
+                    });
+                }).catch(function (jqXHR) {
+                    reject(jqXHR);
+                });
             });
         },
 
@@ -147,8 +165,8 @@
                 var $error = $('<span class="js-field-error help-block"></span>');
                 $error.html(errorData[fieldName]);
 
-                console.log($error);
-                console.log($error[0].outerText);
+                // console.log($error);
+                // console.log($error[0].outerText);
 
                 $wrapper.append($error);
                 $wrapper.addClass('has-error');
