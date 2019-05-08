@@ -44,12 +44,13 @@
         },
 
         loadRepLogs: function() {
-            var self = this;
+            // var self = this;
             $.ajax({
                 url: this._url.rep_log_list,
-            }).then(function (data) {
-                $.each(data.items, function (key, repLog) {
-                    self._addRow(repLog);
+            }).then(data => {
+                // console.log(this,self);
+                $.each(data.items, (key, repLog) => {
+                    this._addRow(repLog);
                 });
             });
         },
@@ -66,22 +67,14 @@
             e.preventDefault();
 
             var $link = $(e.currentTarget);
-            var self = this;
+            // var self = this;
             Swal.fire({
                 title: 'Delete this log?',
                 text: "What? Did you not actually left this?",
                 showCancelButton: true,
                 showLoaderOnConfirm: true,
-                preConfirm: function () {
-                    // return new Promise(function (resolve,reject) {
-                    //     setTimeout(function () {
-                    //         resolve();
-                    //     }, 1000);
-                    // });
-
-                    return self._deleteRepLog($link);
-                }
-            }).then((result) => {
+                preConfirm: () => this._deleteRepLog($link),
+            }).then(result => {
                 if (result.value) {
                     // self._deleteRepLog($link);
                 }else if (
@@ -105,18 +98,17 @@
 
             var deleteUrl = $link.data('url');
             var $row = $link.closest('tr');
-            // var $totalWeightContainer = RepLogApp.$wrapper.find('.js-total-weight');
-            // var newWeight = $totalWeightContainer.html() - $row.data('weight');
-            var self = this;
+            // var self = this;
 
             return $.ajax({
                 url: deleteUrl,
                 method: 'DELETE',
-            }).then(function () {
-                $row.fadeOut('normal', function () {
-                    // $row.remove();
-                    $(this).remove();
-                    self.updateTotalWeightLifted();
+            }).then(() => {
+                $row.fadeOut('normal', () => {
+                    // $(this).remove();
+                    $row.remove();
+                    // self.updateTotalWeightLifted();
+                    this.updateTotalWeightLifted();
                 });
             });
         },
@@ -130,43 +122,42 @@
 
             var $form = $(e.currentTarget);
             var formData = {};
-            $.each($form.serializeArray(), function (key, fieldData) {
+            $.each($form.serializeArray(), (key, fieldData) => {
                 formData[fieldData.name] = fieldData.value;
             });
 
-            var self = this;
+            // var self = this;
 
             this._saveRepLog(formData)
-            .then(function (data) {
-                self._clearForm();
-                self._addRow(data);
-            }).catch(function (errorData) {
-                // var errorData = JSON.parse(jqXHR.responseText);
-                self._mapErrorsToForm(errorData.errors);
+            .then(data => {
+                // self._clearForm();
+                // self._addRow(data)
+                this._clearForm();
+                this._addRow(data);
+            }).catch(errorData => {
+                // self._mapErrorsToForm(errorData.errors);
+                this._mapErrorsToForm(errorData.errors);
             });
         },
 
         _saveRepLog: function(data) {
 
 
-            var self = this;
+            // var self = this;
 
-            return new Promise(function (resolve,reject) {
+            return new Promise((resolve,reject) => {
 
                 $.ajax({
-                    url: self._url.rep_log_new,
+                    url: this._url.rep_log_new,
                     method: 'POST',
                     data: JSON.stringify(data)
-                }).then(function (data, textStatus, jqXHR) {
-                    // console.log(jqXHR.getResponseHeader('Location'));
+                }).then( (data, textStatus, jqXHR) => {
                     $.ajax({
                         url: jqXHR.getResponseHeader('Location'),
-                    }).then(function(data) {
-                        // console.log('no we are REALLY done');
-                        // console.log(data);
+                    }).then((data) => {
                         resolve(data);
                     });
-                }).catch(function (jqXHR) {
+                }).catch(jqXHR => {
                     var errorData = JSON.parse(jqXHR.responseText);
                     reject(errorData);
                 });
@@ -180,9 +171,11 @@
 
             // console.log(errorData);
 
-            $form.find(':input').each(function () {
-                var fieldName = $(this).attr('name');
-                var $wrapper = $(this).closest('.form-group');
+            $form.find(':input').each( (index, element) => {
+                // var fieldName = $(this).attr('name');
+                // var $wrapper = $(this).closest('.form-group');
+                var fieldName = $(element).attr('name');
+                var $wrapper = $(element).closest('.form-group');
                 if (!errorData[fieldName]) {
                     // no error!
                     return;
@@ -238,8 +231,9 @@
         calculateTotalWeight: function () {
             var totalWeight = 0;
 
-            this.$wrapper.find('tbody tr').each(function() {
-                totalWeight += $(this).data('weight');
+            this.$wrapper.find('tbody tr').each((index, element) => {
+                // totalWeight += $(this).data('weight');
+                totalWeight += $(element).data('weight');
             });
 
             return  totalWeight;
