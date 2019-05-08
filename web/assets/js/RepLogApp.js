@@ -71,15 +71,27 @@
                 title: 'Delete this log?',
                 text: "What? Did you not actually left this?",
                 showCancelButton: true,
+                showLoaderOnConfirm: true,
+                preConfirm: function () {
+                    // return new Promise(function (resolve,reject) {
+                    //     setTimeout(function () {
+                    //         resolve();
+                    //     }, 1000);
+                    // });
+
+                    return self._deleteRepLog($link);
+                }
             }).then((result) => {
                 if (result.value) {
-                    self._deleteRepLog($link);
+                    // self._deleteRepLog($link);
                 }else if (
                     // Read more about handling dismissals
                     result.dismiss === Swal.DismissReason.cancel
                 ) {
                     console.log("canceled");
                 }
+            }).catch(function (arg) {
+                console.log('canceled', arg);
             });
         },
 
@@ -97,7 +109,7 @@
             // var newWeight = $totalWeightContainer.html() - $row.data('weight');
             var self = this;
 
-            $.ajax({
+            return $.ajax({
                 url: deleteUrl,
                 method: 'DELETE',
             }).then(function () {
