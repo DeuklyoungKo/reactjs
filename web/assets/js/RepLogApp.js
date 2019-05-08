@@ -1,6 +1,6 @@
 'use strict';
 
-(function (window, $) {
+(function (window, $, swal) {
 
     window.RepLogApp = function($wrapper) {
         this.$wrapper = $wrapper;
@@ -66,6 +66,25 @@
             e.preventDefault();
 
             var $link = $(e.currentTarget);
+            var self = this;
+            Swal.fire({
+                title: 'Delete this log?',
+                text: "What? Did you not actually left this?",
+                showCancelButton: true,
+            }).then((result) => {
+                if (result.value) {
+                    self._deleteRepLog($link);
+                }else if (
+                    // Read more about handling dismissals
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    console.log("canceled");
+                }
+            });
+        },
+
+        _deleteRepLog: function($link) {
+
             $link.addClass('text-danger');
             $link.find('.fa')
                 .removeClass('fa-trash')
@@ -109,15 +128,9 @@
             .then(function (data) {
                 self._clearForm();
                 self._addRow(data);
-            }).catch(function (jqXHR) {
-                // if (typeof jqXHR.responseText === 'undefined') {
-                //     throw jqXHR;
-                // }
-
-                var errorData = JSON.parse(jqXHR.responseText);
+            }).catch(function (errorData) {
+                // var errorData = JSON.parse(jqXHR.responseText);
                 self._mapErrorsToForm(errorData.errors);
-            // }).catch(function (e) {
-            //     console.log(e);
             });
         },
 
@@ -142,7 +155,8 @@
                         resolve(data);
                     });
                 }).catch(function (jqXHR) {
-                    reject(jqXHR);
+                    var errorData = JSON.parse(jqXHR.responseText);
+                    reject(errorData);
                 });
             });
         },
@@ -230,4 +244,4 @@
     //     return  totalWeight;
     // };
 
-})(window, jQuery);
+})(window, jQuery, swal);
