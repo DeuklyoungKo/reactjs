@@ -1,4 +1,14 @@
-var aGreateNumber = 10;
+// var aGreateNumber = 10;
+let aGreateNumber = 10;
+
+if ( true ) {
+    let aGreateNumber = 42;
+
+    // (() => {
+    //     var aGreateNumber = 42;
+    // })();
+
+}
 
 setTimeout(() => {
     console.log(aGreateNumber);
