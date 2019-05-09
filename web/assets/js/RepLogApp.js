@@ -29,7 +29,6 @@
             this.handleNewFormSubmit.bind(this)
         )
 
-
     };
 
     $.extend(window.RepLogApp.prototype, {
@@ -43,7 +42,7 @@
             rep_log_new: '/reps',
         },
 
-        loadRepLogs: function() {
+        loadRepLogs() {
             // var self = this;
             $.ajax({
                 url: this._url.rep_log_list,
@@ -56,14 +55,15 @@
         },
 
 
-        updateTotalWeightLifted: function() {
+        updateTotalWeightLifted() {
             this.$wrapper.find('.js-total-weight').html(
-                this.helper.calculateTotalWeight()
+                // this.helper.calculateTotalWeight();
+                this.helper.getTotalWeightString()
             );
         },
 
 
-        handleRepLogDelete: function(e) {
+        handleRepLogDelete(e) {
             e.preventDefault();
 
             const $link = $(e.currentTarget);
@@ -88,7 +88,7 @@
             });
         },
 
-        _deleteRepLog: function($link) {
+        _deleteRepLog($link) {
 
             $link.addClass('text-danger');
             $link.find('.fa')
@@ -113,11 +113,11 @@
             });
         },
 
-        handleRowClick: function() {
+        handleRowClick() {
             console.log('row clicked');
         },
 
-        handleNewFormSubmit: function (e) {
+        handleNewFormSubmit(e) {
             e.preventDefault();
 
             const $form = $(e.currentTarget);
@@ -140,15 +140,16 @@
             });
         },
 
-        _saveRepLog: function(data) {
-
+        _saveRepLog(data) {
 
             // var self = this;
 
             return new Promise((resolve,reject) => {
 
+                const url = this._url.rep_log_new;
+
                 $.ajax({
-                    url: this._url.rep_log_new,
+                    url,
                     method: 'POST',
                     data: JSON.stringify(data)
                 }).then( (data, textStatus, jqXHR) => {
@@ -164,7 +165,7 @@
             });
         },
 
-        _mapErrorsToForm: function (errorData) {
+        _mapErrorsToForm(errorData) {
             // reset things
             const $form = this.$wrapper.find(this._selectors.newRepForm);
             this._removeFormErrors();
@@ -192,20 +193,20 @@
             });
         },
 
-        _removeFormErrors: function () {
+        _removeFormErrors() {
             const $form = this.$wrapper.find(this._selectors.newRepForm);
             $form.find('.js-field-error').remove();
             $form.find('.form-group').removeClass('has-error');
         },
 
-        _clearForm: function() {
+        _clearForm() {
             this._removeFormErrors();
 
             const $form = this.$wrapper.find(this._selectors.newRepForm);
             $form[0].reset();
         },
 
-        _addRow: function (repLog) {
+        _addRow(repLog) {
             // console.log(repLog);
             const tplText = $('#js-rep-log-row-template').html();
             const tpl = _.template(tplText);
@@ -228,7 +229,7 @@
     };
 
     $.extend(Helper.prototype, {
-        calculateTotalWeight: function () {
+        calculateTotalWeight() {
             let totalWeight = 0;
 
             this.$wrapper.find('tbody tr').each((index, element) => {
@@ -237,17 +238,17 @@
             });
 
             return  totalWeight;
+        },
+
+        getTotalWeightString(maxWeight = 500) {
+            let weight = this.calculateTotalWeight();
+
+            if (weight > maxWeight) {
+                weight = maxWeight + '+';
+            }
+
+            return weight + ' lbs';
         }
     });
-
-    // Helper.prototype.calculateTotalWeight = function () {
-    //     var totalWeight = 0;
-    //
-    //     this.$wrapper.find('tbody tr').each(function() {
-    //         totalWeight += $(this).data('weight');
-    //     });
-    //
-    //     return  totalWeight;
-    // };
 
 })(window, jQuery, swal);
