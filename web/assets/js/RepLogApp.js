@@ -28,7 +28,7 @@
             // this.$wrapper.find('.js-new-rep-log-form').on(
             this.$wrapper.on(
                 'submit',
-                this._selectors.newRepForm,
+                RepLogApp._selectors.newRepForm,
                 this.handleNewFormSubmit.bind(this)
             )
         }
@@ -36,13 +36,13 @@
         /**
          * Call like this.selectors
          */
-        get _selectors() {
+        static get _selectors() {
             return {
                 newRepForm: '.js-new-rep-log-form'
             }
         }
 
-        get _url() {
+        static get _url() {
             return {
                 rep_log_list: '/reps',
                 rep_log_new: '/reps',
@@ -53,7 +53,7 @@
         loadRepLogs() {
             // var self = this;
             $.ajax({
-                url: this._url.rep_log_list,
+                url: RepLogApp._url.rep_log_list,
             }).then(data => {
                 // console.log(this,self);
                 $.each(data.items, (key, repLog) => {
@@ -154,7 +154,7 @@
 
             return new Promise((resolve,reject) => {
 
-                const url = this._url.rep_log_new;
+                const url = RepLogApp._url.rep_log_new;
 
                 $.ajax({
                     url,
@@ -175,7 +175,7 @@
 
         _mapErrorsToForm(errorData) {
             // reset things
-            const $form = this.$wrapper.find(this._selectors.newRepForm);
+            const $form = this.$wrapper.find(RepLogApp._selectors.newRepForm);
             this._removeFormErrors();
 
             // console.log(errorData);
@@ -202,7 +202,7 @@
         }
 
         _removeFormErrors() {
-            const $form = this.$wrapper.find(this._selectors.newRepForm);
+            const $form = this.$wrapper.find(RepLogApp._selectors.newRepForm);
             $form.find('.js-field-error').remove();
             $form.find('.form-group').removeClass('has-error');
         }
@@ -210,7 +210,7 @@
         _clearForm() {
             this._removeFormErrors();
 
-            const $form = this.$wrapper.find(this._selectors.newRepForm);
+            const $form = this.$wrapper.find(RepLogApp._selectors.newRepForm);
             $form[0].reset();
         }
 
@@ -431,14 +431,18 @@
         }
 
         calculateTotalWeight() {
-            let totalWeight = 0;
+            // let totalWeight = 0;
+            //
+            // this.$wrapper.find('tbody tr').each((index, element) => {
+            //     // totalWeight += $(this).data('weight');
+            //     totalWeight += $(element).data('weight');
+            // });
+            //
+            // return  totalWeight;
 
-            this.$wrapper.find('tbody tr').each((index, element) => {
-                // totalWeight += $(this).data('weight');
-                totalWeight += $(element).data('weight');
-            });
-
-            return  totalWeight;
+            return Helper._calculateWeights(
+                this.$wrapper.find('tbody tr')
+            );
         }
 
         getTotalWeightString(maxWeight = 500) {
@@ -451,6 +455,17 @@
             return weight + ' lbs';
         }
 
+
+        static _calculateWeights($elements) {
+            let totalWeight = 0;
+
+            $elements.each((index, element) => {
+                // totalWeight += $(this).data('weight');
+                totalWeight += $(element).data('weight');
+            });
+
+            return  totalWeight;
+        }
 
     }
 
