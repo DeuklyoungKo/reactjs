@@ -51,14 +51,15 @@
 
 
         loadRepLogs() {
-            // var self = this;
             $.ajax({
                 url: RepLogApp._url.rep_log_list,
             }).then(data => {
-                // console.log(this,self);
-                $.each(data.items, (key, repLog) => {
+                // $.each(data.items, (key, repLog) => {
+                // console.log(data);
+                for (let repLog of data.items) {
+                    // console.log(repLog);
                     this._addRow(repLog);
-                });
+                }
             });
         }
 
@@ -130,9 +131,11 @@
 
             const $form = $(e.currentTarget);
             const formData = {};
-            $.each($form.serializeArray(), (key, fieldData) => {
+
+            // $.each($form.serializeArray(), (key, fieldData) => {
+            for (let fieldData in $form.serializeArray()) {
                 formData[fieldData.name] = fieldData.value;
-            });
+            }
 
             // var self = this;
 
@@ -180,9 +183,8 @@
 
             // console.log(errorData);
 
-            $form.find(':input').each( (index, element) => {
-                // var fieldName = $(this).attr('name');
-                // var $wrapper = $(this).closest('.form-group');
+            // $form.find(':input').each( (index, element) => {
+            for (let element in $form.find(':input')) {
                 const fieldName = $(element).attr('name');
                 const $wrapper = $(element).closest('.form-group');
                 if (!errorData[fieldName]) {
@@ -198,7 +200,7 @@
 
                 $wrapper.append($error);
                 $wrapper.addClass('has-error');
-            });
+            }
         }
 
         _removeFormErrors() {
@@ -236,15 +238,6 @@
         }
 
         calculateTotalWeight() {
-            // let totalWeight = 0;
-            //
-            // this.$wrapper.find('tbody tr').each((index, element) => {
-            //     // totalWeight += $(this).data('weight');
-            //     totalWeight += $(element).data('weight');
-            // });
-            //
-            // return  totalWeight;
-
             return Helper._calculateWeights(
                 this.$wrapper.find('tbody tr')
             );
@@ -264,10 +257,11 @@
         static _calculateWeights($elements) {
             let totalWeight = 0;
 
-            $elements.each((index, element) => {
-                // totalWeight += $(this).data('weight');
+            console.log($elements);
+            // $elements.each((index, element) => {
+            for (let element in $elements) {
                 totalWeight += $(element).data('weight');
-            });
+            }
 
             return  totalWeight;
         }
