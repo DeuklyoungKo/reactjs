@@ -1,61 +1,55 @@
-const data = ["vote1", "vote2", "vote1", "vote2", "vote2"];
-const reducer = (accumulator, value, index, array) => {
+let foods = new WeakMap();
 
-    console.log(accumulator);
+foods.set(['italian'], 'gelato');
+foods.set(['mexican'],'tortas');
+foods.set(['canadian'],'poutine');
 
-    if (accumulator[value]) {
-        accumulator[value] = accumulator[value] + 1;
-    } else {
-        accumulator[value] = 1;
-    }
-    return accumulator;
-};
-// const getVote = data.reduce(reducer, {}); // { vote1: 2, vote2: 3 }
-const getVote2 = data.reduce(reducer); // "vote1"
+let southernUsStates = ['Tennessee','Kentucky','Texas'];
+foods.set(southernUsStates,'hot chicken');
+southernUsStates = null;
 
-
+console.log(
+    foods.get(['italian']),
+    foods.has(['french']),
+    foods.get(southernUsStates),
+    foods.size
+);
 
 /*
 
+let foods = new Map();
+foods.set('italian', 'gelato');
+foods.set('mexican','tortas');
+foods.set('canadian','poutine');
 
-var data = [1, 2, 3, 4, 5, 6, 1];
-var reducer = (accumulator, value, index, array) => {
+let southernUsStates = ['Tennessee','Kentucky','Texas'];
+foods.set(southernUsStates,'hot chicken');
 
-    console.log(accumulator);
-
-    var sumOfAccAndVal = accumulator + value;
-
-    // console.log(sumOfAccAndVal);
-
-    if (index === array.length - 1) {
-        return (sumOfAccAndVal) / array.length;
-    }
-    return sumOfAccAndVal;
-};
-
-var getMean = data.reduce(reducer, 0);
-console.log(getMean); // 3.142857142857143
+console.log(
+    foods.get('italian'),
+    foods.has('french'),
+    foods.get(southernUsStates),
+    foods.size
+);
 
 
-
-
-const favoriteFood = 'gelato';
-const iLoveFood = `The year is ${(new Date()).getFullYear()} and my favorite food is ${favoriteFood}`;
-console.log(iLoveFood);
-
-
-
-var votes = ["kim", "hong", "lee", "hong", "lee", "lee", "hong"];
-var reducer = function(accumulator, value, index, array) {
-    if (accumulator.hasOwnProperty(value)) {
-        accumulator[value] = accumulator[value] + 1;
-    } else {
-        accumulator[value] = 1;
-    }
-    return accumulator;
+for (let [countryKey, food] of foods.entries()) {
+    console.log(countryKey, food);
 }
-var initialValue = {};
-var result = votes.reduce(reducer, initialValue);
-console.log(result); // { kim: 1, hong: 3, lee: 3 }
+
+for (let countryKey of foods.keys()) {
+    console.log(countryKey);
+}
+
 */
 
+/*
+let foods = {};
+
+foods.itlian = 'gelato';
+foods.mexican = 'tortas';
+foods.canadian = 'poutine';
+
+console.log(foods.itlian);
+
+*/
