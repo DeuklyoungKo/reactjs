@@ -1,62 +1,16 @@
+let foods = new Set();
+foods.add('gelato');
+foods.add('tortas');
+foods.add('gelato');
 
-
-let foods = new WeakMap();
-
-foods.set(['italian'], 'gelato');
-foods.set(['mexican'],'tortas');
-foods.set(['canadian'],'poutine');
-
-let southernUsStates = ['Tennessee','Kentucky','Texas'];
-foods.set(southernUsStates,'hot chicken');
-southernUsStates = null;
-
-console.log(
-    foods.get(['italian']),
-    foods.has(['french']),
-    foods.get(southernUsStates),
-    foods.size
-);
+console.log(foods);
 
 /*
 
-let foods = new Map();
-foods.set('italian', 'gelato');
-foods.set('mexican','tortas');
-foods.set('canadian','poutine');
+let foods = [];
+foods.push('gelato');
+foods.push('tortas');
+foods.push('gelato');
 
-let southernUsStates = ['Tennessee','Kentucky','Texas'];
-foods.set(southernUsStates,'hot chicken');
-
-console.log(
-    foods.get('italian'),
-    foods.has('french'),
-    foods.get(southernUsStates),
-    foods.size
-);
-
-
-for (let [countryKey, food] of foods.entries()) {
-    console.log(countryKey, food);
-}
-
-for (let countryKey of foods.keys()) {
-    console.log(countryKey);
-}
-
-*/
-
-/*
-let foods = {};
-
-foods.itlian = 'gelato';
-foods.mexican = 'tortas';
-foods.canadian = 'poutine';
-
-console.log(foods.itlian);
-
-*/
-
-/*
-Ex Ref:
-http://chanlee.github.io/2016/08/15/hello-es6-part-3/
+console.log(foods);
 */

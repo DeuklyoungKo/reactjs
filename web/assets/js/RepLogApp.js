@@ -2,9 +2,6 @@
 
 (function (window, $, swal) {
 
-
-    // let HelperInstance = null;
-    // let HelperInstances = new WeakMap();
     let HelperInstances = new Map();
 
     class RepLogApp {
@@ -12,15 +9,11 @@
         constructor($wrapper) {
 
             this.$wrapper = $wrapper;
-            // this.helper = new Helper($wrapper);
-            // this.HelperInstance = new Helper(this.$wrapper);
-            // HelperInstance = new Helper(this.$wrapper);
-            HelperInstances.set(this, new Helper(this.$wrapper));
-            // return;
+            this.repLogs = [];
+            HelperInstances.set(this, new Helper(this.repLogs));
 
             this.loadRepLogs();
 
-            // this.$wrapper.find('.js-delete-rep-log').on(
             this.$wrapper.on(
                 'click',
                 '.js-delete-rep-log',
@@ -63,12 +56,10 @@
             $.ajax({
                 url: RepLogApp._url.rep_log_list,
             }).then(data => {
-                // $.each(data.items, (key, repLog) => {
-                // console.log(data);
                 for (let repLog of data.items) {
-                    // console.log(repLog);
                     this._addRow(repLog);
                 }
+                // console.log(this.repLogs, this.repLogs.includes(data.items[0]));
             });
         }
 
@@ -124,9 +115,19 @@
                 method: 'DELETE',
             }).then(() => {
                 $row.fadeOut('normal', () => {
-                    // $(this).remove();
+
+                    // we need to remove the repLog from this.repLogs
+                    // the "key" is the index to this repLog on this.repLogs
+                    this.repLogs.splice(
+                        $row.data('key'),
+                        1
+                    );
+
                     $row.remove();
-                    // self.updateTotalWeightLifted();
+
+                    console.log(this.repLogs)
+
+                    // this.repLogs.remove()
                     this.updateTotalWeightLifted();
                 });
             });
@@ -142,8 +143,11 @@
             const $form = $(e.currentTarget);
             const formData = {};
 
+
+            // console.log($form.serializeArray());
             // $.each($form.serializeArray(), (key, fieldData) => {
-            for (let fieldData in $form.serializeArray()) {
+            for (let fieldData of $form.serializeArray()) {
+                // console.log(fieldData, fieldData.name,  fieldData.value);
                 formData[fieldData.name] = fieldData.value;
             }
 
@@ -194,7 +198,7 @@
             // console.log(errorData);
 
             // $form.find(':input').each( (index, element) => {
-            for (let element in $form.find(':input')) {
+            for (let element of $form.find(':input')) {
                 const fieldName = $(element).attr('name');
                 const $wrapper = $(element).closest('.form-group');
                 if (!errorData[fieldName]) {
@@ -226,13 +230,13 @@
         }
 
         _addRow(repLog) {
-            let {itemLabel, reps, id, totallyMadeUpKey = 'whatever!'} = repLog;
-            // console.log(id, itemLabel, reps, totallyMadeUpKey);
-            // const tplText = $('#js-rep-log-row-template').html();
-            // const tplText = rowTemplate;
-            // const tpl = _.template(tplText);
+            this.repLogs.push(repLog);
+            // let {itemLabel, reps, id, totallyMadeUpKey = 'whatever!'} = repLog;
             const html = rowTemplate(repLog);
-            this.$wrapper.find('tbody').append($.parseHTML(html));
+            const $row = $($.parseHTML(html));
+            $row.data('key', this.repLogs.length - 1);
+            // this.$wrapper.find('tbody').append($.parseHTML(html));
+            this.$wrapper.find('tbody').append($row);
             this.updateTotalWeightLifted();
         }
 
@@ -243,13 +247,15 @@
      */
     class Helper {
 
-        constructor($wrapper) {
-            this.$wrapper = $wrapper;
+        constructor(repLogs) {
+            this.repLogs = repLogs;
         }
 
         calculateTotalWeight() {
+
+            // console.log(this.repLogs)
             return Helper._calculateWeights(
-                this.$wrapper.find('tbody tr')
+                this.repLogs
             );
         }
 
@@ -264,14 +270,20 @@
         }
 
 
-        static _calculateWeights($elements) {
+        static _calculateWeights(repLogs) {
             let totalWeight = 0;
 
-            // console.log($elements);
-            // $elements.each((index, element) => {
-            for (let element in $elements) {
-                totalWeight += $(element).data('weight');
+            for (let repLog of repLogs) {
+                // console.log(repLog, repLog.totalWeightLifted);
+                totalWeight += repLog.totalWeightLifted;
             }
+/*
+            console.log(repLogs);
+            for (let repLog in repLogs) {
+                // console.log(repLog, repLogs[repLog].totalWeightLifted);
+                totalWeight += repLogs[repLog].totalWeightLifted;
+            }
+  */
 
             return  totalWeight;
         }
@@ -279,18 +291,7 @@
     }
 
     function upper(template, ...expressions) {
-
-        // console.log(template);
-        // console.log(...expressions);
-
         return template.reduce((accumulator, part, i) => {
-
-            // console.log(accumulator);
-            // console.log(part);
-            // console.log(i);
-
-            // console.log(expressions[i - 1].toUpperCase);
-
             return accumulator + (expressions[i - 1].toUpperCase ? expressions[i - 1].toUpperCase() : expressions[i - 1]) + part
         })
     }
@@ -312,17 +313,6 @@
                 </td>
             </tr>
         `;
-/*
-
-    new RepLogApp($('body'));
-    new RepLogApp($('body'));
-    new RepLogApp($('body'));
-    new RepLogApp($('body'));
-
-    setTimeout(() => {
-        console.log(HelperInstances);
-    }, 5000);
-*/
 
 
     window.RepLogApp = RepLogApp;
