@@ -2,12 +2,21 @@
 
 (function (window, $, swal) {
 
+
+    // let HelperInstance = null;
+    // let HelperInstances = new WeakMap();
+    let HelperInstances = new Map();
+
     class RepLogApp {
 
         constructor($wrapper) {
 
             this.$wrapper = $wrapper;
-            this.helper = new Helper($wrapper);
+            // this.helper = new Helper($wrapper);
+            // this.HelperInstance = new Helper(this.$wrapper);
+            // HelperInstance = new Helper(this.$wrapper);
+            HelperInstances.set(this, new Helper(this.$wrapper));
+            // return;
 
             this.loadRepLogs();
 
@@ -66,8 +75,9 @@
 
         updateTotalWeightLifted() {
             this.$wrapper.find('.js-total-weight').html(
-                // this.helper.calculateTotalWeight();
-                this.helper.getTotalWeightString()
+                // HelperInstance.getTotalWeightString()
+                HelperInstances.get(this).getTotalWeightString()
+
             );
         }
 
@@ -257,7 +267,7 @@
         static _calculateWeights($elements) {
             let totalWeight = 0;
 
-            console.log($elements);
+            // console.log($elements);
             // $elements.each((index, element) => {
             for (let element in $elements) {
                 totalWeight += $(element).data('weight');
@@ -279,7 +289,7 @@
             // console.log(part);
             // console.log(i);
 
-            console.log(expressions[i - 1].toUpperCase);
+            // console.log(expressions[i - 1].toUpperCase);
 
             return accumulator + (expressions[i - 1].toUpperCase ? expressions[i - 1].toUpperCase() : expressions[i - 1]) + part
         })
@@ -295,13 +305,25 @@
                 <td>
                     <a href="#"
                         class="js-delete-rep-log"
-                        data-url="<%= links._self %>"
+                        data-url="${repLog.links._self}"
                     >
                         <span class="fa fa-trash"></span>
                     </a>
                 </td>
             </tr>
         `;
+/*
+
+    new RepLogApp($('body'));
+    new RepLogApp($('body'));
+    new RepLogApp($('body'));
+    new RepLogApp($('body'));
+
+    setTimeout(() => {
+        console.log(HelperInstances);
+    }, 5000);
+*/
+
 
     window.RepLogApp = RepLogApp;
 })(window, jQuery, swal);

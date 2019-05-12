@@ -1,3 +1,5 @@
+
+
 let foods = new WeakMap();
 
 foods.set(['italian'], 'gelato');
@@ -52,4 +54,9 @@ foods.canadian = 'poutine';
 
 console.log(foods.itlian);
 
+*/
+
+/*
+Ex Ref:
+http://chanlee.github.io/2016/08/15/hello-es6-part-3/
 */
