@@ -61,7 +61,8 @@
     {{ parent() }}
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8.10.2/dist/sweetalert2.all.min.js"></script>
-    <script src="{{ asset('assets/js/RepLogApp.js')}}?noUsingCache={{ keyByTime }}"></script>
+    {#<script src="{{ asset('assets/js/RepLogApp1.js')}}?noUsingCache={{ keyByTime }}"></script>#}
+    <script src="{{ asset('assets/dist/RepLogApp1.js')}}?noUsingCache={{ keyByTime }}"></script>
 
     <script>
         // console.log(window);
